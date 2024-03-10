@@ -38,6 +38,8 @@ class App extends Component {
     const formData = this.state.formData;
     this.setState({ isLoading: true });
 
+    console.log(formData);
+
     fetch("http://127.0.0.1:5000/prediction/", {
       headers: {
         Accept: "application/json",

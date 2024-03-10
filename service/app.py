@@ -13,7 +13,7 @@ class PredictionSchema(Schema):
     select2 = fields.Integer(required=True)
     select3 = fields.Integer(required=True)
 
-    def load(self, data):
+    def load_key_by_key(self, data):
         loaded_data = {}
 
         for key, field in self.fields.items():
@@ -26,11 +26,11 @@ class PredictionSchema(Schema):
                         loaded_data[key] = field.deserialize(data[key])
                 except ValidationError as error:
                     raise ValidationError({key: error.messages})
-        print(loaded_data)  # Debugging purposes only
+
         return loaded_data
 
 
-@app.route("/prediction/", methods=["OPTIONS"])
+@app.route("/prediction", methods=["OPTIONS"])
 def options():
     response = make_response()
     response.headers.add("Access-Control-Allow-Origin", "*")
@@ -42,9 +42,10 @@ def options():
 @app.route("/prediction/", methods=["POST"])
 def make_prediction():
     json_data = request.get_json()
+    print(json_data)
     schema = PredictionSchema()
     try:
-        data = schema.load(json_data)
+        data = schema.load_key_by_key(json_data)
 
         # Perform prediction with 'data'
 
